@@ -36,5 +36,11 @@
         android:id="@+id/newEventNewReceiptFragment"
         android:name="com.sergstas.chequecalculator.ui.newevent.NewEventNewReceiptFragment"
         android:label="fragment_new_event_new_receipt"
-        tools:layout="@layout/fragment_new_event_new_receipt" />
+        tools:layout="@layout/fragment_new_event_new_receipt" >
+        <argument
+            android:name="receipt"
+            app:argType="com.sergstas.domain.models.SessionData$ReceiptData"
+            app:nullable="true"
+            android:defaultValue="@null" />
+    </fragment>
 </navigation>

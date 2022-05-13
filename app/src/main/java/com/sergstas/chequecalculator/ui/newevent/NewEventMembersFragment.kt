@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.sergstas.chequecalculator.R
@@ -20,7 +20,7 @@ import com.sergstas.domain.models.UserData
 
 class NewEventMembersFragment: Fragment(R.layout.fragment_new_event_members) {
     private val binding by viewBinding(FragmentNewEventMembersBinding::bind)
-    private val viewModel by viewModels<NewEventViewModel> {
+    private val viewModel by activityViewModels<NewEventViewModel> {
         requireContext().findAppComponent().viewModelFactory()
     }
     private lateinit var adapter: AbstractAdapter<SingleButtonItem, SingleButtonItemViewHolder>
@@ -45,7 +45,8 @@ class NewEventMembersFragment: Fragment(R.layout.fragment_new_event_members) {
 
     private fun subscribe() = with(viewModel) {
         members.observe(viewLifecycleOwner) {
-            if (adapter.currentList != it) {
+            val mapped = it?.map(this@NewEventMembersFragment::toListItem) ?: return@observe
+            if (adapter.currentList != mapped) {
                 adapter.submitList(it.map(this@NewEventMembersFragment::toListItem))
             }
             updateSpinner()

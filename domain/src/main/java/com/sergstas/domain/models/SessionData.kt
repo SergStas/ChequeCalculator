@@ -1,5 +1,7 @@
 package com.sergstas.domain.models
 
+import java.io.Serializable
+
 data class SessionData(
     val name: String,
     val date: Long,
@@ -10,7 +12,9 @@ data class SessionData(
         val name: String,
         val payer: UserData,
         val positions: List<PositionData>,
-    )
+    ): Serializable {
+        val price get() = positions.sumOf { it.price }
+    }
 
     data class PositionData(
         val name: String,
