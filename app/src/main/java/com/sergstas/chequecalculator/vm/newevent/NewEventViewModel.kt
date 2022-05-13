@@ -1,11 +1,12 @@
 package com.sergstas.chequecalculator.vm.newevent
 
-import com.sergstas.domain.models.UserData
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import com.sergstas.domain.models.SessionData
+import com.sergstas.domain.models.UserData
 
-class NewEventViewModel {
+class NewEventViewModel: ViewModel() {
     val eventName: LiveData<String> get() = _eventName
     private val _eventName = MutableLiveData("")
 
