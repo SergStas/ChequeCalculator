@@ -21,4 +21,5 @@
     <string name="ip_et_price_hint">Price</string>
     <string name="button_remove">Remove</string>
     <string name="ipm_et_part">Part in %</string>
+    <string name="spinner_no_users">No users left</string>
 </resources>

@@ -16,3 +16,4 @@ rootProject.name = "ChequeCalculator"
 include ':app'
 include ':domainыва'
 include ':domain'
+include ':data'
