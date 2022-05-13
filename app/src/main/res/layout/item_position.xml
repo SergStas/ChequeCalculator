@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    style="@style/Card"
+    android:layout_margin="@dimen/rv_item_margin">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="?attr/colorPrimary"
+        android:padding="@dimen/screen_padding">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layoutDirection="rtl"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/ip_b_remove"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="?colorPrimaryVariant"
+                android:textColor="?colorOnPrimary"
+                android:text="@string/button_remove"
+                android:layout_gravity="end" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/ip_card_error"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="@dimen/margin_horizontal"
+                android:layout_marginVertical="@dimen/margin_tiny"
+                app:cardBackgroundColor="?colorOnPrimary"
+                style="@style/Card">
+
+                <TextView
+                    android:id="@+id/ip_tv_error"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/BaseText.Error"
+                    tools:text="Invalid data"
+                    android:textAlignment="center"
+                    android:layout_gravity="center"
+                    android:maxLines="2"
+                    android:ellipsize="end" />
+
+            </androidx.cardview.widget.CardView>
+
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/ip_et_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/BaseText.H4"
+            android:textColor="?colorOnPrimary"
+            android:textColorHint="?colorOnPrimary"
+            android:backgroundTint="?colorOnPrimary"
+            android:hint="@string/ip_et_name_hint"
+            android:autofillHints="no"
+            android:inputType="text" />
+
+        <EditText
+            android:id="@+id/ip_et_price"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/BaseText.H4"
+            android:textColorHint="?colorOnPrimary"
+            android:textColor="?colorOnPrimary"
+            android:backgroundTint="?colorOnPrimary"
+            android:hint="@string/ip_et_price_hint"
+            android:autofillHints="no"
+            android:inputType="numberDecimal" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/ip_rv_members"
+            android:layout_width="match_parent"
+            android:layout_height="240dp"
+            android:orientation="vertical"
+            tools:listitem="@layout/item_position_member"/>
+
+        <LinearLayout
+            android:id="@+id/ip_ll_add"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layoutDirection="rtl"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/ip_b_add"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="?colorPrimaryVariant"
+                android:textColor="?colorOnPrimary"
+                android:text="@string/button_add" />
+
+            <Spinner
+                android:id="@+id/ne_nr_spinner_member"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="?colorOnPrimary" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

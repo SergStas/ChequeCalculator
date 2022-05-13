@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".ui.newevent.NewEventNewReceiptFragment"
+    android:padding="@dimen/screen_padding">
+
+    <TextView
+        android:id="@+id/ne_nr_tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/ne_nr_tv_title"
+        style="@style/BaseText.H1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/ne_nr_et_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/ne_nr_et_name"
+        style="@style/BaseText.H4"
+        android:textColorHint="?colorPrimary"
+        android:backgroundTint="?colorPrimary"
+        android:inputType="text"
+        android:autofillHints="no"
+        app:layout_constraintTop_toBottomOf="@id/ne_nr_tv_title"
+        android:layout_marginTop="@dimen/margin_vertical" />
+
+    <LinearLayout
+        android:id="@+id/ne_nr_ll_payer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/ne_nr_et_name"
+        android:layout_marginTop="@dimen/margin_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/BaseText.H4"
+            android:text="@string/ne_nr_tv_payer"/>
+
+        <Spinner
+            android:id="@+id/ne_nr_spinner_payer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_horizontal" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/ne_nr_tv_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/BaseText.H2"
+        tools:text="Total price: 1265 RUB"
+        app:layout_constraintTop_toBottomOf="@id/ne_nr_ll_payer"
+        android:layout_marginTop="@dimen/margin_vertical"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/ne_nr_ll_add"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="@dimen/margin_vertical"
+        app:layout_constraintTop_toBottomOf="@id/ne_nr_tv_price"
+        android:layoutDirection="rtl">
+
+        <Button
+            android:id="@+id/ne_nr_b_add"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/button_add" />
+
+        <TextView
+            android:id="@+id/ne_nr_tv_add"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/BaseText.H4"
+            android:text="@string/ne_nr_tv_add"
+            android:layout_marginStart="@dimen/margin_horizontal" />
+
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:layout_marginVertical="@dimen/margin_vertical"
+        app:layout_constraintTop_toBottomOf="@id/ne_nr_ll_add"
+        app:layout_constraintBottom_toTopOf="@id/ne_nr_b_finish"
+        tools:listitem="@layout/item_position" />
+
+    <Button
+        android:id="@+id/ne_nr_b_finish"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/button_finish"
+        android:enabled="false"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

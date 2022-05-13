@@ -5,4 +5,7 @@
 
     <item android:id="@id/newEventMembersFragment"
         android:title="@string/menu_nav_ne_members" />
+
+    <item android:id="@id/newEventReceiptsFragment"
+        android:title="@string/menu_nav_ne_receipts" />
 </menu>

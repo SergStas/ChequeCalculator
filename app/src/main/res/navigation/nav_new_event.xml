@@ -18,5 +18,23 @@
         android:id="@+id/newEventMembersFragment"
         android:name="com.sergstas.chequecalculator.ui.newevent.NewEventMembersFragment"
         android:label="fragment_new_event_members"
-        tools:layout="@layout/fragment_new_event_members" />
+        tools:layout="@layout/fragment_new_event_members" >
+        <action
+            android:id="@+id/action_newEventMembersFragment_to_newEventReceiptsFragment"
+            app:destination="@id/newEventReceiptsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/newEventReceiptsFragment"
+        android:name="com.sergstas.chequecalculator.ui.newevent.NewEventReceiptsFragment"
+        android:label="fragment_new_event_receipts"
+        tools:layout="@layout/fragment_new_event_receipts" >
+        <action
+            android:id="@+id/action_newEventReceiptsFragment_to_newEventNewReceiptFragment"
+            app:destination="@id/newEventNewReceiptFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/newEventNewReceiptFragment"
+        android:name="com.sergstas.chequecalculator.ui.newevent.NewEventNewReceiptFragment"
+        android:label="fragment_new_event_new_receipt"
+        tools:layout="@layout/fragment_new_event_new_receipt" />
 </navigation>
