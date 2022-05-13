@@ -2,6 +2,7 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
+    id 'androidx.navigation.safeargs.kotlin'
 }
 
 android {
@@ -36,6 +37,16 @@ android {
 }
 
 dependencies {
+    // ViewBindingDelegate
+    implementation 'com.github.kirich1409:viewbindingpropertydelegate-noreflection:1.5.3'
+
+    // Navigation
+    implementation 'androidx.navigation:navigation-ui-ktx:2.4.2'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.4.2'
+
+    // Coroutines
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.0'
+
     // Dagger
     implementation 'com.google.dagger:dagger:2.40.1'
     kapt('com.google.dagger:dagger-compiler:2.40.1')
