@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@id/newEventInitialFragment"
+        android:title="@string/menu_nav_ne_initial" />
+
+    <item android:id="@id/newEventMembersFragment"
+        android:title="@string/menu_nav_ne_members" />
+</menu>

@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">ChequeCalculator</string>
+    <string name="menu_b_new_event">New event</string>
+    <string name="ne_members_tv_title">Select members of event</string>
+    <string name="button_next">Next</string>
+    <string name="button_add">Add</string>
+    <string name="ne_initial_tv_title">Name and date of event</string>
+    <string name="ne_initial_et_name_hint">Name of event</string>
+    <string name="ne_initial_et_date_hint">Date of event (dd.mm.yyyy)</string>
+    <string name="menu_nav_ne_initial">Initial</string>
+    <string name="menu_nav_ne_members">Members</string>
 </resources>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_new_event"
+    app:startDestination="@id/newEventInitialFragment">
+
+    <fragment
+        android:id="@+id/newEventInitialFragment"
+        android:name="com.sergstas.chequecalculator.ui.newevent.NewEventInitialFragment"
+        android:label="fragment_new_event_initial"
+        tools:layout="@layout/fragment_new_event_initial" >
+        <action
+            android:id="@+id/action_newEventInitialFragment_to_newEventMembersFragment"
+            app:destination="@id/newEventMembersFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/newEventMembersFragment"
+        android:name="com.sergstas.chequecalculator.ui.newevent.NewEventMembersFragment"
+        android:label="fragment_new_event_members"
+        tools:layout="@layout/fragment_new_event_members" />
+</navigation>

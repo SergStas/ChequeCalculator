@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="BaseText">
+        <item name="android:textColor">?attr/colorPrimary</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="BaseText.H1">
+        <item name="android:textSize">28sp</item>
+    </style>
+
+    <style name="BaseText.H4">
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="BaseText.H5">
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="Card">
+        <item name="cardCornerRadius">8dp</item>
+    </style>
+</resources>
