@@ -44,11 +44,27 @@
             style="@style/BaseText.H4"
             android:text="@string/ne_nr_tv_payer"/>
 
-        <Spinner
-            android:id="@+id/ne_nr_spinner_payer"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_horizontal" />
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/margin_horizontal">
+
+            <Spinner
+                android:id="@+id/ne_nr_spinner_payer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="@dimen/margin_horizontal" />
+
+            <TextView
+                android:id="@+id/ne_nr_tv_no_members"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                style="@style/BaseText.H4"
+                android:text="@string/ne_nr_tv_no_members" />
+
+        </FrameLayout>
 
     </LinearLayout>
 
@@ -88,6 +104,7 @@
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/ne_nr_rv_positions"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:orientation="vertical"

@@ -52,9 +52,11 @@ class NewEventReceiptsFragment: Fragment(R.layout.fragment_new_event_receipts) {
     }
 
     private fun setAdapter() {
-        adapter = AbstractAdapter.create { SingleButtonItemViewHolder(
-            ItemSingleButtonTitleBinding.inflate(requireActivity().layoutInflater, it, false),
-        ) }.apply { bindToRecycler(binding.neReceiptsRvReceipts) }
+        adapter = AbstractAdapter.create {
+            SingleButtonItemViewHolder(
+                ItemSingleButtonTitleBinding.inflate(requireActivity().layoutInflater, it, false),
+            )
+        }.apply { bindToRecycler(binding.neReceiptsRvReceipts) }
     }
 
     private fun setView() = with(binding) {

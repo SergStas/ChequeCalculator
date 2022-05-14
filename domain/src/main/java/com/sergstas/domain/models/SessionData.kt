@@ -25,7 +25,17 @@ data class SessionData(
     data class PartData(
         val user: UserData,
         val part: Double,
-    )
+    ) {
+        companion object {
+            fun distributeBetween(users: List<UserData>) =
+                users.map { userData ->
+                    PartData(
+                        user = userData,
+                        part = 100.0 / users.size,
+                    )
+                }
+        }
+    }
 }
 
 

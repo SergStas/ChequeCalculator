@@ -22,4 +22,6 @@
     <string name="button_remove">Remove</string>
     <string name="ipm_et_part">Part in %</string>
     <string name="spinner_no_users">No users left</string>
+    <string name="ne_nr_tv_price_ph">Total price: %.2f RUB</string>
+    <string name="ne_nr_tv_no_members">Members not found</string>
 </resources>
