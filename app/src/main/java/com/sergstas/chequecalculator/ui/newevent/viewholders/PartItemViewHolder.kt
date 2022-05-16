@@ -10,7 +10,7 @@ class PartItemViewHolder(
 ): AbstractViewHolder<PartItem>(binding.root) {
     override fun bind(data: PartItem) = with(binding) {
         ipmTvUsername.text = data.name
-        ipmBRemove.setOnClickListener { data.onRemove }
+        ipmBRemove.setOnClickListener { data.onRemove() }
         ipmEtPart.setOnNewValueListener {
             data.onPartEdited(it.toDoubleOrNull() ?: return@setOnNewValueListener)
         }

@@ -106,11 +106,10 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/ne_nr_rv_positions"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="@dimen/new_event_rv_height"
         android:orientation="vertical"
         android:layout_marginVertical="@dimen/margin_vertical"
         app:layout_constraintTop_toBottomOf="@id/ne_nr_ll_add"
-        app:layout_constraintBottom_toTopOf="@id/ne_nr_b_finish"
         tools:listitem="@layout/item_position" />
 
     <Button
@@ -118,7 +117,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/button_finish"
+        android:layout_marginTop="@dimen/margin_vertical"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/ne_nr_rv_positions"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -57,10 +57,9 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/ne_members_rv_users"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="@dimen/new_event_rv_height"
         android:layout_marginVertical="@dimen/margin_vertical"
         app:layout_constraintTop_toBottomOf="@id/ne_members_ll_add"
-        app:layout_constraintBottom_toTopOf="@id/ne_members_b_next"
         android:orientation="vertical"
         tools:listitem="@layout/item_single_button_title" />
 
@@ -69,7 +68,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ne_members_rv_users"
+        android:layout_marginTop="@dimen/margin_vertical"
         android:text="@string/button_next" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

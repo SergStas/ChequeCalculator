@@ -4,6 +4,7 @@ import com.sergstas.chequecalculator.util.rv.models.AbstractItem
 import com.sergstas.domain.models.SessionData
 
 data class PartItem(
+    val id: Int,
     val name: String,
     val part: Double,
     val onRemove: () -> Unit,
@@ -11,14 +12,16 @@ data class PartItem(
 ): AbstractItem() {
     companion object {
         fun fromPartData(
+            id: Int,
             data: SessionData.PartData,
-            onRemove: (SessionData.PartData) -> Unit,
-            onPartEdited: (SessionData.PartData, Double) -> Unit,
+            onRemove: (Int) -> Unit,
+            onPartEdited: (Int, Double) -> Unit,
         ) = PartItem(
+            id = id,
             name = data.user.name,
             part = data.part,
-            onRemove = { onRemove(data) },
-            onPartEdited = { part -> onPartEdited(data, part) },
+            onRemove = { onRemove(id) },
+            onPartEdited = { part -> onPartEdited(id, part) },
         )
     }
 }

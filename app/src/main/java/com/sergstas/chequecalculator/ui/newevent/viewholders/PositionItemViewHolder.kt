@@ -17,7 +17,7 @@ class PositionItemViewHolder(
         setEditTextFields(data)
         setAddingPanel(data)
         setErrorMessage(data)
-        ipBRemove.setOnClickListener { data.onRemove }
+        ipBRemove.setOnClickListener { data.onRemove() }
         setList(data)
     }
 

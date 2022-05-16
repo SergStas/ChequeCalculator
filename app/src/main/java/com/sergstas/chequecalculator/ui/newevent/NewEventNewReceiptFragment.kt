@@ -19,7 +19,6 @@ import com.sergstas.chequecalculator.util.rv.AbstractAdapter
 import com.sergstas.chequecalculator.util.spinner.DefaultSpinnerAdapter
 import com.sergstas.chequecalculator.util.spinner.onItemSelected
 import com.sergstas.chequecalculator.vm.newevent.NewEventViewModel
-import com.sergstas.domain.models.SessionData
 import com.sergstas.domain.models.UserData
 
 class NewEventNewReceiptFragment: Fragment(R.layout.fragment_new_event_new_receipt) {
@@ -30,7 +29,7 @@ class NewEventNewReceiptFragment: Fragment(R.layout.fragment_new_event_new_recei
     }
     private lateinit var adapter: AbstractAdapter<PositionItem, PositionItemViewHolder>
 
-    private val totalPrice get() = viewModel.receiptPositions.value?.sumOf { it.position.price } ?: 0.0
+    private val totalPrice get() = viewModel.receiptPositions.value?.sumOf { it.price } ?: 0.0
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -48,16 +47,24 @@ class NewEventNewReceiptFragment: Fragment(R.layout.fragment_new_event_new_recei
 
     private fun subscribe() {
         viewModel.members.observe(viewLifecycleOwner, ::submitSpinner)
-        viewModel.receiptName.observe(viewLifecycleOwner, ::updateName)
-        viewModel.receiptPayer.observe(viewLifecycleOwner, ::updatePayer)
         viewModel.receiptPositions.observe(viewLifecycleOwner, ::updatePositions)
     }
 
-    private fun updatePositions(list: List<NewEventViewModel.PositionWithMessage>?) {
+    private fun updatePositions(list: List<NewEventViewModel.PositionIndexed>?) {
         updatePrice()
-        val mapped = list?.map { toPositionItem(it.position) } ?: return
+        val mapped = list?.map(::toPositionItem) ?: return
         if (mapped == adapter.currentList) return
-        adapter.submitList(mapped)
+        if (mapped.size == adapter.currentList.size) {
+            var areEqual = true
+            mapped.forEachIndexed { i, newItem ->
+                val oldItem = adapter.currentList[i]
+                if (newItem.parts.size != oldItem.parts.size) {
+                    areEqual = false
+                }
+            }
+            if (areEqual) return
+        }
+        adapter.submitList(mapped.toList() )
         updateFinishButton()
     }
 
@@ -124,15 +131,16 @@ class NewEventNewReceiptFragment: Fragment(R.layout.fragment_new_event_new_recei
         binding.neNrTvPrice.text = token
     }
 
-    private fun toPositionItem(data: SessionData.PositionData) =
+    private fun toPositionItem(data: NewEventViewModel.PositionIndexed) =
         PositionItem.fromPositionData(
+            idGenerator = NewEventViewModel::nextId,
             data = data,
             members = viewModel.members.value ?: emptyList(),
             onRemove = viewModel::deletePosition,
             onTitleEdited = viewModel::editPositionTitle,
             onPriceEdited = viewModel::editPositionPrice,
-            onRemovePart = viewModel::removePart,
             onPartEdited = viewModel::editPart,
+            onRemovePart = viewModel::removePart,
             onMemberIncluded = viewModel::addPart,
         )
 

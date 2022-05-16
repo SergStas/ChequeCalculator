@@ -16,29 +16,35 @@ class NewEventViewModel @Inject constructor(
     private val validator: INewEventValidator,
     private val usersRepository: IUserRepository,
 ): ViewModel() {
+    companion object {
+        fun nextId() = ++idIndex
+        private var idIndex = 0
+    }
+
     val eventName: LiveData<String> get() = _eventName
+
     private val _eventName = MutableLiveData<String>()
-
     val eventDate: LiveData<String> get() = _eventDate
+
     private val _eventDate = MutableLiveData<String>()
-
     val allUsers: LiveData<List<UserData>> get() = _allUsers
+
     private val _allUsers = MutableLiveData(emptyList<UserData>())
-
     val members: LiveData<List<UserData>> get() = _members
+
     private val _members = MutableLiveData(emptyList<UserData>())
-
     val receipts: LiveData<List<SessionData.ReceiptData>> get() = _receipts
+
     private val _receipts = MutableLiveData(emptyList<SessionData.ReceiptData>())
-
     val receiptName: LiveData<String?> get() = _receiptName
+
     private val _receiptName = MutableLiveData<String?>()
-
     val receiptPayer: LiveData<UserData?> get() = _receiptPayer
-    private val _receiptPayer = MutableLiveData<UserData?>()
 
-    val receiptPositions: LiveData<List<PositionWithMessage>?> get() = _receiptPositions
-    private val _receiptPositions = MutableLiveData<List<PositionWithMessage>?>()
+    private val _receiptPayer = MutableLiveData<UserData?>()
+    val receiptPositions: LiveData<List<PositionIndexed>?> get() = _receiptPositions
+
+    private val _receiptPositions = MutableLiveData<List<PositionIndexed>?>()
 
     init {
         viewModelScope.launch {
@@ -70,7 +76,7 @@ class NewEventViewModel @Inject constructor(
             add(SessionData.ReceiptData(
                 name = _receiptName.value ?: return,
                 payer = _receiptPayer.value ?: return,
-                positions = _receiptPositions.value?.map { it.position } ?: return,
+                positions = _receiptPositions.value?.map { it.toPositionData() } ?: return,
             ))
         }
     }
@@ -80,7 +86,7 @@ class NewEventViewModel @Inject constructor(
         val new = SessionData.ReceiptData(
             name = _receiptName.value ?: return,
             payer = _receiptPayer.value ?: return,
-            positions = _receiptPositions.value?.map { it.position } ?: return,
+            positions = _receiptPositions.value?.map { it.toPositionData() } ?: return,
         )
         _receipts.value = _receipts.value?.toMutableList()?.apply { set(index, new) }
     }
@@ -92,7 +98,7 @@ class NewEventViewModel @Inject constructor(
     fun setEditReceipt(receipt: SessionData.ReceiptData?) {
         _receiptName.value = receipt?.name
         _receiptPayer.value = receipt?.payer
-        _receiptPositions.value = receipt?.positions?.map(::PositionWithMessage)
+        _receiptPositions.value = receipt?.positions?.map(PositionIndexed::fromPositionData)
     }
 
     fun updateEditReceiptName(name: String) {
@@ -105,71 +111,117 @@ class NewEventViewModel @Inject constructor(
     }
 
     fun addPosition() {
-        val position = PositionWithMessage(SessionData.PositionData("", 0.0, emptyList()))
+        val position = PositionIndexed(nextId(), "", 0.0, emptyList())
         _receiptPositions.value = _receiptPositions.value?.toMutableList()?.apply { add(position) }
             ?: listOf(position)
     }
 
-    fun deletePosition(position: SessionData.PositionData) {
-        val pos = findPos(position) ?: return
+    fun deletePosition(id: Int) {
+        val pos = findPos(id) ?: return
         val editedPositions = _receiptPositions.value?.toMutableList()?.apply { remove(pos) } ?: return
         if (editedPositions == _receiptPositions.value) return
         _receiptPositions.value = editedPositions
     }
 
-    fun editPositionTitle(position: SessionData.PositionData, title: String) {
-        if (position.name == title) return
-        val edited = findPos(position)?.copy(position = position.copy(name = title)) ?: return
-        val index = indexOfPos(position) ?: return
+    fun editPositionTitle(id: Int, title: String) {
+        val pos = findPos(id) ?: return
+        if (pos.name == title) return
+        val edited = pos.copy(name = title)
+        val index = indexOfPos(id) ?: return
         _receiptPositions.value = positionsWithModifiedItem(index, edited)
     }
 
-    fun editPositionPrice(position: SessionData.PositionData, price: Double) {
-        if (abs(position.price - price) < 1e-2) return
-        val edited = findPos(position)?.copy(position = position.copy(price = price)) ?: return
-        val index = indexOfPos(position) ?: return
+    fun editPositionPrice(id: Int, price: Double) {
+        val pos = findPos(id) ?: return
+        if (abs(pos.price - price) < 1e-2) return
+        val edited = pos.copy(price = price)
+        val index = indexOfPos(id) ?: return
         _receiptPositions.value = positionsWithModifiedItem(index, edited)
     }
 
-    fun addPart(position: SessionData.PositionData, username: String) {
+    fun addPart(id: Int, username: String) {
         val user = members.value?.firstOrNull { it.name == username } ?: return
-        if (user in position.parts.map { it.user }) return
-        val users = position.parts.map { it.user }.toMutableList().apply { add(user) }
+        val pos = findPos(id) ?: return
+        if (user in pos.parts.map { it.user }) return
+        val users = pos.parts.map { it.user }.toMutableList().apply { add(user) }
         val parts = SessionData.PartData.distributeBetween(users)
-        val edited = findPos(position)?.copy(position = position.copy(parts = parts)) ?: return
-        val index = indexOfPos(position) ?: return
+            .map(PositionIndexed.PartIndexed::fromPartData)
+        val edited = pos.copy(parts = parts)
+        val index = indexOfPos(id) ?: return
         _receiptPositions.value = positionsWithModifiedItem(index, edited)
     }
 
-    fun editPart(position: SessionData.PositionData, part: SessionData.PartData, value: Double) {
-        if (part !in position.parts || abs(part.part - value) < 1e-2) return
-        val editedPart = part.copy(part = value)
-        val partIndex = position.parts.indexOf(part).takeIf { it >= 0 } ?: return
-        val editedParts = position.parts.toMutableList().apply { set(partIndex, editedPart) }
-        val editedPos = findPos(position)?.copy(position = position.copy(parts = editedParts)) ?: return
-        val posIndex = indexOfPos(position) ?: return
+    fun editPart(positionId: Int, partId: Int, value: Double) {
+        val pos = findPos(positionId) ?: return
+        val part = pos.parts.firstOrNull { it.id == partId } ?: return
+        if (abs(part.value - value) < 1e-2) return
+        val partIndex = pos.parts.indexOf(part).takeIf { it >= 0 } ?: return
+        val editedPart = part.copy(value = value)
+        val editedParts = pos.parts.toMutableList().apply { set(partIndex, editedPart) }
+        val editedPos = pos.copy(parts = editedParts)
+        val posIndex = indexOfPos(positionId) ?: return
         _receiptPositions.value = positionsWithModifiedItem(posIndex, editedPos)
     }
 
-    fun removePart(position: SessionData.PositionData, part: SessionData.PartData) {
-        if (part !in position.parts) return
-        val parts = position.parts.toMutableList().apply { remove(part) }
-        val edited = findPos(position)?.copy(position = position.copy(parts = parts)) ?: return
-        val index = indexOfPos(position) ?: return
+    fun removePart(positionId: Int, partId: Int) {
+        val pos = findPos(positionId) ?: return
+        val part = pos.parts.firstOrNull { it.id == partId } ?: return
+        val editedParts = pos.parts.toMutableList().apply { remove(part) }
+        val edited = pos.copy(parts = editedParts)
+        val index = indexOfPos(positionId) ?: return
         _receiptPositions.value = positionsWithModifiedItem(index, edited)
     }
 
-    private fun findPos(position: SessionData.PositionData) =
-        _receiptPositions.value?.firstOrNull { it.position == position }
+    private fun findPos(id: Int) =
+        _receiptPositions.value?.firstOrNull { it.id == id }
 
-    private fun indexOfPos(position: SessionData.PositionData) =
-        _receiptPositions.value?.indexOf(findPos(position))?.takeIf { it >= 0 }
+    private fun indexOfPos(id: Int) =
+        _receiptPositions.value?.indexOf(findPos(id))?.takeIf { it >= 0 }
 
-    private fun positionsWithModifiedItem(index: Int, edited: PositionWithMessage) =
+    private fun positionsWithModifiedItem(index: Int, edited: PositionIndexed) =
         _receiptPositions.value?.toMutableList()?.apply { set(index, edited) }
 
-    data class PositionWithMessage(
-        val position: SessionData.PositionData,
+    data class PositionIndexed(
+        val id: Int,
+        val name: String,
+        val price: Double,
+        val parts: List<PartIndexed>,
         val messages: List<String> = emptyList(),
-    )
+    ) {
+        companion object {
+            fun fromPositionData(data: SessionData.PositionData) =
+                PositionIndexed(
+                    id = nextId(),
+                    name = data.name,
+                    price = data.price,
+                    parts = data.parts.map { PartIndexed.fromPartData(it) },
+                )
+        }
+
+        fun toPositionData()  = SessionData.PositionData(
+            name = name,
+            price = price,
+            parts = parts.map { it.toPartData() }
+        )
+
+        data class PartIndexed(
+            val id: Int,
+            val user: UserData,
+            val value: Double,
+        ) {
+            companion object {
+                fun fromPartData(data: SessionData.PartData) =
+                    PartIndexed(
+                        id = nextId(),
+                        user = data.user,
+                        value = data.part,
+                    )
+            }
+
+            fun toPartData() = SessionData.PartData(
+                user = user,
+                part = value,
+            )
+        }
+    }
 }
