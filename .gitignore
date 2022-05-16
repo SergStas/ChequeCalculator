@@ -13,3 +13,4 @@
 .externalNativeBuild
 .cxx
 local.properties
+/network/src/main/java/com/sergstas/network/keys/*
