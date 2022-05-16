@@ -8,5 +8,6 @@ import dagger.Module
     ViewModelModule::class,
     ValidationModule::class,
     DataModule::class,
+    ServicesModule::class,
 ])
 class AppModule

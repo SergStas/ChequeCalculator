@@ -14,7 +14,7 @@ class UserRepository @Inject constructor(): IUserRepository {
     }
 
     override suspend fun loginUser(params: LoginParams): LoginResult {
-        return LoginResult.UserNotFound
+        return LoginResult.Error.UserNotFound
     }
 
     override suspend fun register(params: RegistrationParams): RegistrationResult {

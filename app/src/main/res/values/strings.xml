@@ -39,4 +39,19 @@
     <string name="ne_nr_pos_invalid_message_price">Neagtive or zero price</string>
     <string name="ne_nr_validation_result_empty">No positions</string>
     <string name="ne_nr_pos_invalid_message_no_parts">No members</string>
+    <string name="login_tv_title">Login</string>
+    <string name="login_et_login_hint">UserName</string>
+    <string name="button_login">Login</string>
+    <string name="login_tv_register"><u>Create new account</u></string>
+    <string name="register_tv_title">Register</string>
+    <string name="register_tv_login"><u>Already has account</u></string>
+    <string name="button_register">Register</string>
+    <string name="login_et_telegram_hint">\@telegram_tag</string>
+    <string name="login_toast_empty_login">Please input login</string>
+    <string name="login_toast_no_user">User not found</string>
+    <string name="login_toast_unknown">Unknown error has occurred</string>
+    <string name="register_toast_empty_login">Please input login</string>
+    <string name="register_toast_empty_telegram">Please input telegram tag</string>
+    <string name="register_toast_telegram_tag_char">Telegram login must start with \'@\'</string>
+    <string name="register_toast_login_is_occuppied">Yor username is already used</string>
 </resources>

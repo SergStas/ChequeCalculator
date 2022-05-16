@@ -6,4 +6,6 @@
     <dimen name="margin_horizontal">12dp</dimen>
     <dimen name="margin_tiny">4dp</dimen>
     <dimen name="new_event_rv_height">480dp</dimen>
+    <dimen name="login_et_login_width">180dp</dimen>
+    <dimen name="screen_padding_horizontal_large">80dp</dimen>
 </resources>
