@@ -2,6 +2,7 @@ package com.sergstas.chequecalculator.ui.newevent.viewholders
 
 import android.view.LayoutInflater
 import androidx.core.view.isVisible
+import com.sergstas.chequecalculator.R
 import com.sergstas.chequecalculator.databinding.ItemPositionBinding
 import com.sergstas.chequecalculator.databinding.ItemPositionMemberBinding
 import com.sergstas.chequecalculator.ui.newevent.models.PositionItem
@@ -13,12 +14,26 @@ import com.sergstas.chequecalculator.util.spinner.DefaultSpinnerAdapter
 class PositionItemViewHolder(
     private val binding: ItemPositionBinding,
 ): AbstractViewHolder<PositionItem>(binding.root) {
+    private val context get() = binding.root.context
+
     override fun bind(data: PositionItem) = with(binding) {
-        setEditTextFields(data)
-        setAddingPanel(data)
-        setErrorMessage(data)
-        ipBRemove.setOnClickListener { data.onRemove() }
-        setList(data)
+        ipTvName.text = data.name
+        ipTvPrice.text =
+            if (data.price >= 1e-2) context.getString(R.string.price_ph).format(data.price.toFloat())
+            else ""
+        ipBExpand.setOnClickListener { data.onExpand() }
+        if (data.isExpanded) {
+            ipLlExpanded.isVisible = true
+            ipBExpand.text = context.getString(R.string.button_hide)
+            setEditTextFields(data)
+            setAddingPanel(data)
+            setErrorMessage(data)
+            ipBRemove.setOnClickListener { data.onRemove() }
+            setList(data)
+        } else {
+            ipLlExpanded.isVisible = false
+            ipBExpand.text = context.getString(R.string.button_expand)
+        }
     }
 
     private fun setList(data: PositionItem) = with(binding) {

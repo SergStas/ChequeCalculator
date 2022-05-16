@@ -94,8 +94,5 @@ class NewEventMembersFragment: Fragment(R.layout.fragment_new_event_members) {
         )
 
     private fun nextPage() =
-        findNavController().apply {
-            popBackStack()
-            navigate(R.id.newEventReceiptsFragment)
-        }
+        findNavController().navigate(R.id.action_newEventMembersFragment_to_newEventReceiptsFragment)
 }

@@ -58,7 +58,9 @@ class NewEventNewReceiptFragment: Fragment(R.layout.fragment_new_event_new_recei
             var areEqual = true
             mapped.forEachIndexed { i, newItem ->
                 val oldItem = adapter.currentList[i]
-                if (newItem.parts.size != oldItem.parts.size) {
+                val partSizesAreEqual = newItem.parts.size == oldItem.parts.size
+                val expansionEqual = newItem.isExpanded == oldItem.isExpanded
+                if (!partSizesAreEqual || !expansionEqual) {
                     areEqual = false
                 }
             }
@@ -136,6 +138,8 @@ class NewEventNewReceiptFragment: Fragment(R.layout.fragment_new_event_new_recei
             idGenerator = NewEventViewModel::nextId,
             data = data,
             members = viewModel.members.value ?: emptyList(),
+            isExpanded = data.isExpanded,
+            onExpand = viewModel::expandPosition,
             onRemove = viewModel::deletePosition,
             onTitleEdited = viewModel::editPositionTitle,
             onPriceEdited = viewModel::editPositionPrice,
@@ -144,10 +148,5 @@ class NewEventNewReceiptFragment: Fragment(R.layout.fragment_new_event_new_recei
             onMemberIncluded = viewModel::addPart,
         )
 
-    private fun back() {
-        findNavController().apply {
-            popBackStack()
-            navigate(R.id.newEventReceiptsFragment)
-        }
-    }
+    private fun back() = findNavController().popBackStack()
 }

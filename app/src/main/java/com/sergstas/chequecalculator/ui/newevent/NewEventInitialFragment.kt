@@ -53,8 +53,5 @@ class NewEventInitialFragment: Fragment(R.layout.fragment_new_event_initial) {
     }
 
     private fun nextPage() =
-        findNavController().apply {
-            popBackStack()
-            navigate(R.id.newEventMembersFragment)
-        }
+        findNavController().navigate(R.id.action_newEventInitialFragment_to_newEventMembersFragment)
 }

@@ -9,6 +9,7 @@ import com.sergstas.domain.models.SessionData
 import com.sergstas.domain.models.UserData
 import com.sergstas.domain.repository.IUserRepository
 import kotlinx.coroutines.launch
+import java.util.*
 import javax.inject.Inject
 import kotlin.math.abs
 
@@ -22,31 +23,32 @@ class NewEventViewModel @Inject constructor(
     }
 
     val eventName: LiveData<String> get() = _eventName
-
     private val _eventName = MutableLiveData<String>()
+
     val eventDate: LiveData<String> get() = _eventDate
-
     private val _eventDate = MutableLiveData<String>()
+
     val allUsers: LiveData<List<UserData>> get() = _allUsers
-
     private val _allUsers = MutableLiveData(emptyList<UserData>())
+
     val members: LiveData<List<UserData>> get() = _members
-
     private val _members = MutableLiveData(emptyList<UserData>())
+
     val receipts: LiveData<List<SessionData.ReceiptData>> get() = _receipts
-
     private val _receipts = MutableLiveData(emptyList<SessionData.ReceiptData>())
+
     val receiptName: LiveData<String?> get() = _receiptName
-
     private val _receiptName = MutableLiveData<String?>()
+
     val receiptPayer: LiveData<UserData?> get() = _receiptPayer
+    private val _receiptPayer = MutableLiveData<UserData?>(members.value?.firstOrNull())
 
-    private val _receiptPayer = MutableLiveData<UserData?>()
     val receiptPositions: LiveData<List<PositionIndexed>?> get() = _receiptPositions
-
     private val _receiptPositions = MutableLiveData<List<PositionIndexed>?>()
 
     init {
+        val date = Date()
+        _eventDate.value = "%02d.%02d.%04d".format(date.day, date.month, date.year + 1900)
         viewModelScope.launch {
             _allUsers.value = usersRepository.getAllUsers()
         }
@@ -97,7 +99,7 @@ class NewEventViewModel @Inject constructor(
 
     fun setEditReceipt(receipt: SessionData.ReceiptData?) {
         _receiptName.value = receipt?.name
-        _receiptPayer.value = receipt?.payer
+        _receiptPayer.value = receipt?.payer ?: members.value?.firstOrNull()
         _receiptPositions.value = receipt?.positions?.map(PositionIndexed::fromPositionData)
     }
 
@@ -110,8 +112,15 @@ class NewEventViewModel @Inject constructor(
         _receiptPayer.value = user
     }
 
+    fun expandPosition(id: Int) {
+        val pos = findPos(id) ?: return
+        val index = indexOfPos(id) ?: return
+        val edited = pos.copy(isExpanded = !pos.isExpanded)
+        _receiptPositions.value = positionsWithModifiedItem(index, edited)
+    }
+
     fun addPosition() {
-        val position = PositionIndexed(nextId(), "", 0.0, emptyList())
+        val position = PositionIndexed(nextId(), "", 0.0, emptyList(), true)
         _receiptPositions.value = _receiptPositions.value?.toMutableList()?.apply { add(position) }
             ?: listOf(position)
     }
@@ -186,6 +195,7 @@ class NewEventViewModel @Inject constructor(
         val name: String,
         val price: Double,
         val parts: List<PartIndexed>,
+        val isExpanded: Boolean,
         val messages: List<String> = emptyList(),
     ) {
         companion object {
@@ -195,6 +205,7 @@ class NewEventViewModel @Inject constructor(
                     name = data.name,
                     price = data.price,
                     parts = data.parts.map { PartIndexed.fromPartData(it) },
+                    isExpanded = true,
                 )
         }
 

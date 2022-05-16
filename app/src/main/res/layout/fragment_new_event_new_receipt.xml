@@ -52,7 +52,7 @@
             <Spinner
                 android:id="@+id/ne_nr_spinner_payer"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:layout_marginStart="@dimen/margin_horizontal" />
 
@@ -106,7 +106,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/ne_nr_rv_positions"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/new_event_rv_height"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_marginVertical="@dimen/margin_vertical"
         app:layout_constraintTop_toBottomOf="@id/ne_nr_ll_add"

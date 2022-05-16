@@ -24,4 +24,7 @@
     <string name="spinner_no_users">No users left</string>
     <string name="ne_nr_tv_price_ph">Total price: %.2f RUB</string>
     <string name="ne_nr_tv_no_members">Members not found</string>
+    <string name="button_expand">Expand</string>
+    <string name="button_hide">Hide</string>
+    <string name="price_ph">%.2f RUB</string>
 </resources>
