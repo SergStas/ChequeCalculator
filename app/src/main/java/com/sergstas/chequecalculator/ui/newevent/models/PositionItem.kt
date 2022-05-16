@@ -20,8 +20,7 @@ data class PositionItem(
 ): AbstractItem() {
     companion object {
         fun fromPositionData(
-            idGenerator: () -> Int,
-            data: NewEventViewModel.PositionIndexed,
+            data: NewEventViewModel.IndexedPosition,
             isExpanded: Boolean,
             members: List<UserData>,
             onExpand: (Int) -> Unit,
@@ -37,7 +36,7 @@ data class PositionItem(
             name = data.name,
             price = data.price,
             parts = data.parts.map { PartItem.fromPartData(
-                id = idGenerator(),
+                id = it.id,
                 data = it.toPartData(),
                 onRemove = { partId -> onRemovePart(data.id, partId) },
                 onPartEdited = { partId, value -> onPartEdited(data.id, partId, value) },

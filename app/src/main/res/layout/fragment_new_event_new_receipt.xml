@@ -107,10 +107,20 @@
         android:id="@+id/ne_nr_rv_positions"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        tools:layout_height="160dp"
         android:orientation="vertical"
         android:layout_marginVertical="@dimen/margin_vertical"
         app:layout_constraintTop_toBottomOf="@id/ne_nr_ll_add"
         tools:listitem="@layout/item_position" />
+
+    <Button
+        android:id="@+id/ne_nr_b_validate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/button_validate"
+        app:layout_constraintEnd_toStartOf="@id/ne_nr_b_finish"
+        app:layout_constraintBottom_toBottomOf="@id/ne_nr_b_finish"
+        android:layout_marginEnd="@dimen/margin_horizontal" />
 
     <Button
         android:id="@+id/ne_nr_b_finish"

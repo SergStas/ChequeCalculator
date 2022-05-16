@@ -27,4 +27,16 @@
     <string name="button_expand">Expand</string>
     <string name="button_hide">Hide</string>
     <string name="price_ph">%.2f RUB</string>
+    <string name="button_validate">Validate</string>
+    <string name="ne_nr_validation_result_ok">Validated successfully</string>
+    <string name="ne_nr_validation_result_name">Please enter receipt name</string>
+    <string name="ne_nr_validation_result_payer">Please specify payer</string>
+    <string name="ne_nr_validation_result_parts">Invalid parts. Check for errors</string>
+    <string name="ne_nr_pos_invalid_message_duplicated">Duplicated members</string>
+    <string name="ne_nr_pos_invalid_message_name">Name is empty</string>
+    <string name="ne_nr_pos_invalid_message_part">Negative or zero part</string>
+    <string name="ne_nr_pos_invalid_message_sum">Parts sum != 100</string>
+    <string name="ne_nr_pos_invalid_message_price">Neagtive or zero price</string>
+    <string name="ne_nr_validation_result_empty">No positions</string>
+    <string name="ne_nr_pos_invalid_message_no_parts">No members</string>
 </resources>

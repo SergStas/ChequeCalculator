@@ -15,6 +15,7 @@ import com.sergstas.chequecalculator.ui.newevent.models.PositionItem
 import com.sergstas.chequecalculator.ui.newevent.viewholders.PositionItemViewHolder
 import com.sergstas.chequecalculator.util.extensions.findAppComponent
 import com.sergstas.chequecalculator.util.extensions.setOnNewValueListener
+import com.sergstas.chequecalculator.util.extensions.toast
 import com.sergstas.chequecalculator.util.rv.AbstractAdapter
 import com.sergstas.chequecalculator.util.spinner.DefaultSpinnerAdapter
 import com.sergstas.chequecalculator.util.spinner.onItemSelected
@@ -48,39 +49,39 @@ class NewEventNewReceiptFragment: Fragment(R.layout.fragment_new_event_new_recei
     private fun subscribe() {
         viewModel.members.observe(viewLifecycleOwner, ::submitSpinner)
         viewModel.receiptPositions.observe(viewLifecycleOwner, ::updatePositions)
+        viewModel.receiptValid.observe(viewLifecycleOwner, ::updateReceiptValidation)
     }
 
-    private fun updatePositions(list: List<NewEventViewModel.PositionIndexed>?) {
+    private fun updatePositions(list: List<NewEventViewModel.IndexedPosition>?, check: Boolean = true) {
         updatePrice()
         val mapped = list?.map(::toPositionItem) ?: return
-        if (mapped == adapter.currentList) return
-        if (mapped.size == adapter.currentList.size) {
-            var areEqual = true
-            mapped.forEachIndexed { i, newItem ->
-                val oldItem = adapter.currentList[i]
-                val partSizesAreEqual = newItem.parts.size == oldItem.parts.size
-                val expansionEqual = newItem.isExpanded == oldItem.isExpanded
-                if (!partSizesAreEqual || !expansionEqual) {
-                    areEqual = false
+        if (check) {
+            if (mapped == adapter.currentList) return
+            if (mapped.size == adapter.currentList.size) {
+                var areEqual = true
+                mapped.forEachIndexed { i, newItem ->
+                    val oldItem = adapter.currentList[i]
+                    val partSizesAreEqual = newItem.parts.size == oldItem.parts.size
+                    val expansionEqual = newItem.isExpanded == oldItem.isExpanded
+                    if (!partSizesAreEqual || !expansionEqual) {
+                        areEqual = false
+                    }
                 }
+                if (areEqual) return
             }
-            if (areEqual) return
         }
-        adapter.submitList(mapped.toList() )
-        updateFinishButton()
+        adapter.submitList(mapped.toList())
     }
 
     private fun updatePayer(payer: UserData?) {
         val index = viewModel.members.value?.indexOf(payer) ?: return
         if (index < 0) return
         binding.neNrSpinnerPayer.setSelection(index)
-        updateFinishButton()
     }
 
     private fun updateName(name: String?) {
         if (name == binding.neNrEtName.text.toString()) return
         binding.neNrEtName.setText(name)
-        updateFinishButton()
     }
 
     private fun setArgReceipt() =
@@ -88,17 +89,21 @@ class NewEventNewReceiptFragment: Fragment(R.layout.fragment_new_event_new_recei
 
     private fun setView() = with(binding) {
         neNrEtName.setOnNewValueListener(viewModel::updateEditReceiptName)
-        neNrBFinish.setOnClickListener {
-            if (args.receipt == null) {
-                viewModel.saveReceipt()
-            } else {
-                viewModel.replaceReceipt(args.receipt!!)
-            }
-            back()
-        }
         neNrBAdd.setOnClickListener { viewModel.addPosition() }
+        neNrBFinish.setOnClickListener { finish() }
+        neNrBFinish.isEnabled = false
+        neNrBValidate.setOnClickListener { viewModel.validateReceipt() }
         neNrSpinnerPayer.onItemSelected(viewModel::updateEditReceiptPayer)
         submitVmValues()
+    }
+
+    private fun finish() {
+        if (args.receipt == null) {
+            viewModel.saveReceipt()
+        } else {
+            viewModel.replaceReceipt(args.receipt!!)
+        }
+        back()
     }
 
     private fun submitVmValues() {
@@ -108,11 +113,17 @@ class NewEventNewReceiptFragment: Fragment(R.layout.fragment_new_event_new_recei
         updatePayer(viewModel.receiptPayer.value)
     }
 
-    private fun updateFinishButton() {
-        val name = viewModel.receiptName.value?.isNotEmpty() ?: false
-        val payer = viewModel.receiptPayer.value != null
-        val positions = viewModel.receiptPositions.value?.isNotEmpty() ?: false
-        binding.neNrBFinish.isEnabled = name && payer && positions
+    private fun updateReceiptValidation(result: NewEventViewModel.ValidationResult) {
+        binding.neNrBFinish.isEnabled = result == NewEventViewModel.ValidationResult.OK
+        updatePositions(viewModel.receiptPositions.value, false)
+        val message = when(result) {
+            NewEventViewModel.ValidationResult.OK              -> getString(R.string.ne_nr_validation_result_ok)
+            NewEventViewModel.ValidationResult.INVALID_NAME     -> getString(R.string.ne_nr_validation_result_name)
+            NewEventViewModel.ValidationResult.INVALID_PAYER    -> getString(R.string.ne_nr_validation_result_payer)
+            NewEventViewModel.ValidationResult.NO_POSITIONS     -> getString(R.string.ne_nr_validation_result_empty)
+            NewEventViewModel.ValidationResult.INVALID_PARTS    -> getString(R.string.ne_nr_validation_result_parts)
+        }
+        requireContext().toast(message)
     }
 
     private fun submitSpinner(members: List<UserData>?) {
@@ -133,9 +144,8 @@ class NewEventNewReceiptFragment: Fragment(R.layout.fragment_new_event_new_recei
         binding.neNrTvPrice.text = token
     }
 
-    private fun toPositionItem(data: NewEventViewModel.PositionIndexed) =
+    private fun toPositionItem(data: NewEventViewModel.IndexedPosition) =
         PositionItem.fromPositionData(
-            idGenerator = NewEventViewModel::nextId,
             data = data,
             members = viewModel.members.value ?: emptyList(),
             isExpanded = data.isExpanded,
@@ -146,6 +156,7 @@ class NewEventNewReceiptFragment: Fragment(R.layout.fragment_new_event_new_recei
             onPartEdited = viewModel::editPart,
             onRemovePart = viewModel::removePart,
             onMemberIncluded = viewModel::addPart,
+            errorMessage = data.messages.map { it.getMessage() }.firstOrNull() ?: ""
         )
 
     private fun back() = findNavController().popBackStack()

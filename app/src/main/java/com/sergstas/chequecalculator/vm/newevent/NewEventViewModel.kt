@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sergstas.chequecalculator.validation.INewEventValidator
+import com.sergstas.chequecalculator.validation.IPositionValidator
 import com.sergstas.domain.models.SessionData
 import com.sergstas.domain.models.UserData
 import com.sergstas.domain.repository.IUserRepository
@@ -14,11 +15,12 @@ import javax.inject.Inject
 import kotlin.math.abs
 
 class NewEventViewModel @Inject constructor(
-    private val validator: INewEventValidator,
+    private val eventValidator: INewEventValidator,
     private val usersRepository: IUserRepository,
+    private val positionValidator: IPositionValidator
 ): ViewModel() {
     companion object {
-        fun nextId() = ++idIndex
+        private fun nextId() = ++idIndex
         private var idIndex = 0
     }
 
@@ -43,8 +45,11 @@ class NewEventViewModel @Inject constructor(
     val receiptPayer: LiveData<UserData?> get() = _receiptPayer
     private val _receiptPayer = MutableLiveData<UserData?>(members.value?.firstOrNull())
 
-    val receiptPositions: LiveData<List<PositionIndexed>?> get() = _receiptPositions
-    private val _receiptPositions = MutableLiveData<List<PositionIndexed>?>()
+    val receiptPositions: LiveData<List<IndexedPosition>?> get() = _receiptPositions
+    private val _receiptPositions = MutableLiveData<List<IndexedPosition>?>()
+
+    val receiptValid: LiveData<ValidationResult> get() = _receiptValid
+    private val _receiptValid = MutableLiveData<ValidationResult>()
 
     init {
         val date = Date()
@@ -59,7 +64,7 @@ class NewEventViewModel @Inject constructor(
     }
 
     fun setEventDate(token: String) {
-        val valid = validator.validateDate(token)
+        val valid = eventValidator.validateDate(token)
         if (!valid) return
         _eventDate.value = token
     }
@@ -83,6 +88,27 @@ class NewEventViewModel @Inject constructor(
         }
     }
 
+    fun validateReceipt() {
+        var partsAreValid = true
+        _receiptPositions.value = _receiptPositions.value?.map {
+            val result = positionValidator.validate(it)
+            if (result.isInvalid) {
+                partsAreValid = false
+                val invalid = result as? IPositionValidator.Result.Invalid
+                it.copy(messages = invalid?.errors ?: it.messages)
+            } else {
+                it.copy(messages = emptyList())
+            }
+        }
+        _receiptValid.value = when {
+            receiptName.value?.isEmpty() ?: true -> ValidationResult.INVALID_NAME
+            receiptPayer.value !in (members.value ?: emptyList()) -> ValidationResult.INVALID_PAYER
+            _receiptPositions.value?.isEmpty() ?: true -> ValidationResult.NO_POSITIONS
+            !partsAreValid -> ValidationResult.INVALID_PARTS
+            else -> ValidationResult.OK
+        }
+    }
+
     fun replaceReceipt(old: SessionData.ReceiptData) {
         val index = _receipts.value?.indexOf(old)?.takeIf { it >= 0 } ?: return
         val new = SessionData.ReceiptData(
@@ -100,7 +126,8 @@ class NewEventViewModel @Inject constructor(
     fun setEditReceipt(receipt: SessionData.ReceiptData?) {
         _receiptName.value = receipt?.name
         _receiptPayer.value = receipt?.payer ?: members.value?.firstOrNull()
-        _receiptPositions.value = receipt?.positions?.map(PositionIndexed::fromPositionData)
+        _receiptPositions.value = receipt?.positions?.map(IndexedPosition::fromPositionData)
+        if (receipt != null) validateReceipt()
     }
 
     fun updateEditReceiptName(name: String) {
@@ -120,7 +147,7 @@ class NewEventViewModel @Inject constructor(
     }
 
     fun addPosition() {
-        val position = PositionIndexed(nextId(), "", 0.0, emptyList(), true)
+        val position = IndexedPosition(nextId(), "", 0.0, emptyList(), true)
         _receiptPositions.value = _receiptPositions.value?.toMutableList()?.apply { add(position) }
             ?: listOf(position)
     }
@@ -154,7 +181,7 @@ class NewEventViewModel @Inject constructor(
         if (user in pos.parts.map { it.user }) return
         val users = pos.parts.map { it.user }.toMutableList().apply { add(user) }
         val parts = SessionData.PartData.distributeBetween(users)
-            .map(PositionIndexed.PartIndexed::fromPartData)
+            .map(IndexedPosition.PartIndexed::fromPartData)
         val edited = pos.copy(parts = parts)
         val index = indexOfPos(id) ?: return
         _receiptPositions.value = positionsWithModifiedItem(index, edited)
@@ -187,20 +214,20 @@ class NewEventViewModel @Inject constructor(
     private fun indexOfPos(id: Int) =
         _receiptPositions.value?.indexOf(findPos(id))?.takeIf { it >= 0 }
 
-    private fun positionsWithModifiedItem(index: Int, edited: PositionIndexed) =
+    private fun positionsWithModifiedItem(index: Int, edited: IndexedPosition) =
         _receiptPositions.value?.toMutableList()?.apply { set(index, edited) }
 
-    data class PositionIndexed(
+    data class IndexedPosition(
         val id: Int,
         val name: String,
         val price: Double,
         val parts: List<PartIndexed>,
         val isExpanded: Boolean,
-        val messages: List<String> = emptyList(),
+        val messages: List<IPositionValidator.Result.Invalid.Error> = emptyList(),
     ) {
         companion object {
             fun fromPositionData(data: SessionData.PositionData) =
-                PositionIndexed(
+                IndexedPosition(
                     id = nextId(),
                     name = data.name,
                     price = data.price,
@@ -234,5 +261,13 @@ class NewEventViewModel @Inject constructor(
                 part = value,
             )
         }
+    }
+
+    enum class ValidationResult {
+        OK,
+        INVALID_NAME,
+        INVALID_PAYER,
+        INVALID_PARTS,
+        NO_POSITIONS,
     }
 }
