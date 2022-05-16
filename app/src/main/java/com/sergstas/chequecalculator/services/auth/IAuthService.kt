@@ -11,5 +11,5 @@ interface IAuthService {
 
     suspend fun register(username: String, telegram: String): RegistrationResult
 
-    suspend fun logout(username: String): Boolean
+    suspend fun logout()
 }

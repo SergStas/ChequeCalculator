@@ -1,24 +1,22 @@
 package com.sergstas.chequecalculator.services.auth
 
-import com.sergstas.domain.models.UserData
-import com.sergstas.domain.models.auth.LoginResult
-import com.sergstas.domain.models.auth.RegistrationResult
+import com.sergstas.domain.models.auth.LoginParams
+import com.sergstas.domain.models.auth.RegistrationParams
+import com.sergstas.domain.repository.IUserRepository
 import javax.inject.Inject
 
-class AuthService @Inject constructor(): IAuthService {
-    override suspend fun getLoggedInUser(): UserData? {
-        return null
-    }
+class AuthService @Inject constructor(
+    private val userRepository: IUserRepository,
+): IAuthService {
+    override suspend fun getLoggedInUser() =
+        userRepository.getLoggedInUser()
 
-    override suspend fun login(username: String): LoginResult {
-        return LoginResult.Error.Unknown
-    }
+    override suspend fun login(username: String) =
+        userRepository.loginUser(LoginParams(username))
 
-    override suspend fun register(username: String, telegram: String): RegistrationResult {
-        return RegistrationResult.Error.Unknown
-    }
+    override suspend fun register(username: String, telegram: String) =
+        userRepository.register(RegistrationParams(username, telegram))
 
-    override suspend fun logout(username: String): Boolean {
-        return false
-    }
+    override suspend fun logout() =
+        userRepository.logout()
 }

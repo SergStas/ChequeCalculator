@@ -14,4 +14,6 @@ interface IUserRepository {
     suspend fun register(params: RegistrationParams): RegistrationResult
 
     suspend fun getAllUsers(): List<UserData>
+
+    suspend fun logout()
 }
