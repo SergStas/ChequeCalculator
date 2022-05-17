@@ -1,6 +1,6 @@
-package com.sergstas.chequecalculator.validation
+package com.sergstas.chequecalculator.validation.newevent
 
-import com.sergstas.chequecalculator.validation.IPositionValidator.Result.Invalid.Error
+import com.sergstas.chequecalculator.validation.newevent.IPositionValidator.Result.Invalid.Error
 import com.sergstas.chequecalculator.vm.newevent.NewEventViewModel
 import javax.inject.Inject
 import kotlin.math.abs

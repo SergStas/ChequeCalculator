@@ -28,9 +28,12 @@
         <item name="android:textSize">16sp</item>
     </style>
 
+    <style name="BaseText.H5.Error">
+        <item name="android:textStyle">normal</item>
+        <item name="android:textColor">@color/error</item>
+    </style>
+
     <style name="Card">
         <item name="cardCornerRadius">8dp</item>
     </style>
-
-    <color name="error">#f00</color>
 </resources>

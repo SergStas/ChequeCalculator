@@ -4,8 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.sergstas.chequecalculator.validation.INewEventValidator
-import com.sergstas.chequecalculator.validation.IPositionValidator
+import com.sergstas.chequecalculator.validation.newevent.INewEventValidator
+import com.sergstas.chequecalculator.validation.newevent.IPositionValidator
 import com.sergstas.domain.models.SessionData
 import com.sergstas.domain.models.UserData
 import com.sergstas.domain.repository.IUserRepository

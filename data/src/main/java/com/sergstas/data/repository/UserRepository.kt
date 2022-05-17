@@ -18,22 +18,30 @@ class UserRepository @Inject constructor(
         userStorage.getUser()
 
     override suspend fun loginUser(params: LoginParams): LoginResult {
-        val call = api.login(params.username)
-        val response = call.execute()
-        val body = response.body()
-        return when {
-            response.isSuccessful -> body?.run { LoginResult.Success(this) } ?: LoginResult.Error.Unknown
+        val response = api.login(params.username)
+        val result = when {
+            response.isSuccessful -> response.body()?.run { LoginResult.Success(this) }
+                ?: LoginResult.Error.Unknown
             response.code() == 404 -> LoginResult.Error.UserNotFound
             else -> LoginResult.Error.Unknown
         }
+        if (result is LoginResult.Success) {
+            userStorage.loginUser(result.user)
+        }
+        return result
     }
 
-    override suspend fun register(params: RegistrationParams) =
-        when(api.register(params).status) {
+    override suspend fun register(params: RegistrationParams): RegistrationResult {
+        val result = when(api.register(params).status) {
             0 -> RegistrationResult.Success
             1 -> RegistrationResult.Error.UserNameIsOccupied
             else -> RegistrationResult.Error.Unknown
         }
+        if (result is RegistrationResult.Success) {
+            userStorage.loginUser(UserData(params.username))
+        }
+        return result
+    }
 
     override suspend fun getAllUsers(): List<UserData> =
         api.getAllUsers()

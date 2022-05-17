@@ -14,6 +14,7 @@ import dagger.Provides
     DataModule::class,
     ServicesModule::class,
     NetworkModule::class,
+    UseCaseModule::class,
 ])
 class AppModule(private val app: App) {
     @Provides fun provideContext(): Context = app

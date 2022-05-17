@@ -2,6 +2,7 @@ package com.sergstas.chequecalculator.di.modules.vm
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.sergstas.chequecalculator.vm.auth.AuthViewModel
 import com.sergstas.chequecalculator.vm.newevent.NewEventViewModel
 import dagger.Binds
 import dagger.Module
@@ -16,5 +17,10 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(NewEventViewModel::class)
     abstract fun bindNewEventViewModel(newEventViewModel: NewEventViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(AuthViewModel::class)
+    abstract fun bindAuthViewModel(newEventViewModel: AuthViewModel): ViewModel
 }
 

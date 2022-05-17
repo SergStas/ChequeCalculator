@@ -1,4 +1,4 @@
-package com.sergstas.chequecalculator.validation
+package com.sergstas.chequecalculator.validation.newevent
 
 import com.sergstas.chequecalculator.App
 import com.sergstas.chequecalculator.R

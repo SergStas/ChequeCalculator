@@ -39,6 +39,7 @@ android {
 dependencies {
     // Modules
     implementation project(':domain')
+    implementation project(':network')
     implementation project(':data')
 
     // ViewBindingDelegate
@@ -53,7 +54,6 @@ dependencies {
 
     // Dagger
     implementation 'com.google.dagger:dagger:2.40.1'
-    implementation project(path: ':network')
     kapt('com.google.dagger:dagger-compiler:2.40.1')
 
     // RV

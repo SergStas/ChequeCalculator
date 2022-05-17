@@ -1,4 +1,4 @@
-package com.sergstas.chequecalculator.validation
+package com.sergstas.chequecalculator.validation.newevent
 
 import javax.inject.Inject
 
