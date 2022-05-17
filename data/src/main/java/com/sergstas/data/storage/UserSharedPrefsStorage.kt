@@ -17,6 +17,6 @@ class UserSharedPrefsStorage @Inject constructor(
     override suspend fun logoutUser() =
         sharedPreferences.edit().putString(USER_KEY, null).apply()
 
-    override suspend fun getUser() =
-        sharedPreferences.getString(USER_KEY, null)?.run { UserData(this) }
+    override suspend fun getUser() = UserData("aboba")
+//        sharedPreferences.getString(USER_KEY, null)?.run { UserData(this) }
 }

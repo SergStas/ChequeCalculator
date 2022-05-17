@@ -54,4 +54,6 @@
     <string name="register_toast_empty_telegram">Please input telegram tag</string>
     <string name="register_toast_telegram_tag_char">Telegram login must start with \'@\'</string>
     <string name="register_toast_login_is_occuppied">Yor username is already used</string>
+    <string name="menu_nav_new_event">New event</string>
+    <string name="error_get_all_user_fail">Could not establish connection with server, retrying...</string>
 </resources>

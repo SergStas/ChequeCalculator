@@ -71,7 +71,7 @@ class RegisterFragment: Fragment(R.layout.fragment_register) {
     }
 
     private fun toMenu() =
-        findNavController().navigate(R.id.action_registerFragment_to_nav_menu)
+        findNavController().navigate(R.id.action_registerFragment_to_menuFragment)
 
     private fun toLoginPage() =
         findNavController().popBackStack()

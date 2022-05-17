@@ -26,14 +26,14 @@ class LoginFragment: Fragment(R.layout.fragment_login) {
         setView()
     }
 
-    private fun setView() = with(binding) {
-        loginBLogin.setOnClickListener { viewModel.login(loginEtLogin.text.toString()) }
-        loginTvRegister.setOnClickListener { toRegisterPage() }
-    }
-
     override fun onResume() {
         super.onResume()
         viewModel.checkIfAuthed()
+    }
+
+    private fun setView() = with(binding) {
+        loginBLogin.setOnClickListener { viewModel.login(loginEtLogin.text.toString()) }
+        loginTvRegister.setOnClickListener { toRegisterPage() }
     }
 
     private fun subscribe() = with(viewModel) {
@@ -72,5 +72,5 @@ class LoginFragment: Fragment(R.layout.fragment_login) {
         findNavController().navigate(R.id.action_loginFragment_to_registerFragment)
 
     private fun toMenu() =
-        findNavController().navigate(R.id.action_loginFragment_to_nav_menu)
+        findNavController().navigate(R.id.action_loginFragment_to_menuFragment)
 }

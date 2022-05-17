@@ -14,10 +14,8 @@
             android:id="@+id/action_loginFragment_to_registerFragment"
             app:destination="@id/registerFragment" />
         <action
-            android:id="@+id/action_loginFragment_to_nav_menu"
-            app:destination="@id/nav_menu.xml"
-            app:popUpTo="@id/nav_auth"
-            app:popUpToInclusive="true" />
+            android:id="@+id/action_loginFragment_to_menuFragment"
+            app:destination="@id/menuFragment" />
     </fragment>
     <fragment
         android:id="@+id/registerFragment"
@@ -25,10 +23,12 @@
         android:label="fragment_register"
         tools:layout="@layout/fragment_register" >
         <action
-            android:id="@+id/action_registerFragment_to_nav_menu"
-            app:destination="@id/nav_menu.xml"
-            app:popUpTo="@id/nav_auth"
-            app:popUpToInclusive="true" />
+            android:id="@+id/action_registerFragment_to_menuFragment"
+            app:destination="@id/menuFragment" />
     </fragment>
-    <include app:graph="@navigation/nav_menu" />
+    <fragment
+        android:id="@+id/menuFragment"
+        android:name="com.sergstas.chequecalculator.ui.MenuFragment"
+        android:label="fragment_menu"
+        tools:layout="@layout/fragment_menu" />
 </navigation>

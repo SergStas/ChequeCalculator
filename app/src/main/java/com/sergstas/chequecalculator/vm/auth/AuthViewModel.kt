@@ -66,7 +66,7 @@ class AuthViewModel @Inject constructor(
     private fun getExceptionHandler(
         login: Boolean = false,
         registration: Boolean = false,
-    ) = CoroutineExceptionHandler { a, b ->
+    ) = CoroutineExceptionHandler { _, _ ->
         if (login) _loginResult.value = LoginResult.Error.Unknown
         if (registration) _registrationResult.value = RegistrationResult.Error.Unknown
         _loading.value = false

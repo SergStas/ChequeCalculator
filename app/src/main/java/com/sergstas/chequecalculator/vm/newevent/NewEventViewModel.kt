@@ -8,7 +8,9 @@ import com.sergstas.chequecalculator.validation.newevent.INewEventValidator
 import com.sergstas.chequecalculator.validation.newevent.IPositionValidator
 import com.sergstas.domain.models.SessionData
 import com.sergstas.domain.models.UserData
-import com.sergstas.domain.repository.IUserRepository
+import com.sergstas.domain.usecases.users.IGetAllUserUseCase
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
@@ -16,8 +18,8 @@ import kotlin.math.abs
 
 class NewEventViewModel @Inject constructor(
     private val eventValidator: INewEventValidator,
-    private val usersRepository: IUserRepository,
-    private val positionValidator: IPositionValidator
+    private val getAllUserUseCase: IGetAllUserUseCase,
+    private val positionValidator: IPositionValidator,
 ): ViewModel() {
     companion object {
         private fun nextId() = ++idIndex
@@ -51,12 +53,13 @@ class NewEventViewModel @Inject constructor(
     val receiptValid: LiveData<ValidationResult> get() = _receiptValid
     private val _receiptValid = MutableLiveData<ValidationResult>()
 
+    val lastError: LiveData<Error> get() = _lastError
+    private val _lastError = MutableLiveData<Error>()
+
     init {
         val date = Date()
         _eventDate.value = "%02d.%02d.%04d".format(date.day, date.month, date.year + 1900)
-        viewModelScope.launch {
-            _allUsers.value = usersRepository.getAllUsers()
-        }
+        loadUsers()
     }
 
     fun setEventName(name: String) {
@@ -208,6 +211,16 @@ class NewEventViewModel @Inject constructor(
         _receiptPositions.value = positionsWithModifiedItem(index, edited)
     }
 
+    private fun loadUsers(delay: Long = 0) {
+        viewModelScope.launch(CoroutineExceptionHandler { _, _ ->
+            _lastError.value = Error.USER_REQUEST_FAILED
+            loadUsers(5000)
+        }) {
+            delay(delay)
+            _allUsers.value = getAllUserUseCase()
+        }
+    }
+
     private fun findPos(id: Int) =
         _receiptPositions.value?.firstOrNull { it.id == id }
 
@@ -225,6 +238,7 @@ class NewEventViewModel @Inject constructor(
         val isExpanded: Boolean,
         val messages: List<IPositionValidator.Result.Invalid.Error> = emptyList(),
     ) {
+
         companion object {
             fun fromPositionData(data: SessionData.PositionData) =
                 IndexedPosition(
@@ -247,6 +261,7 @@ class NewEventViewModel @Inject constructor(
             val user: UserData,
             val value: Double,
         ) {
+
             companion object {
                 fun fromPartData(data: SessionData.PartData) =
                     PartIndexed(
@@ -269,5 +284,9 @@ class NewEventViewModel @Inject constructor(
         INVALID_PAYER,
         INVALID_PARTS,
         NO_POSITIONS,
+    }
+
+    enum class Error {
+        USER_REQUEST_FAILED,
     }
 }
